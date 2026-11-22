@@ -20,6 +20,32 @@ public class Main {
 
         System.out.println("Invoices: " + invoices.size());
         System.out.println("Payments: " + payments.size());
+
+        for (Invoice invoice : invoices) {
+
+            BigDecimal remainingBalance =
+                    calculateRemainingBalance(invoice, payments);
+
+            if (remainingBalance.compareTo(BigDecimal.ZERO) < 0) {
+                System.out.println("ERROR: Invoice " + invoice.getInvoiceId()
+                        + " has a negative balance!");
+            }
+        }
+
+        for (Invoice invoice : invoices) {
+            int paymentCount = 0;
+
+            for (Payment payment : payments) {
+                if (payment.getInvoiceId() == invoice.getInvoiceId()) {
+                    paymentCount++;
+                }
+            }
+
+            if (paymentCount < 1 || paymentCount > 3) {
+                System.out.println("ERROR: Invoice " + invoice.getInvoiceId()
+                        + " has " + paymentCount + " payments!");
+            }
+        }
     }
 
 
