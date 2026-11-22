@@ -21,6 +21,28 @@ public class Main {
         System.out.println("Invoices: " + invoices.size());
         System.out.println("Payments: " + payments.size());
 
+        // SEARCH
+        Invoice foundInvoice = searchInvoiceById(invoices, 25);
+
+        if (foundInvoice != null) {
+            System.out.println("Found invoice:");
+            printInvoiceDetails(foundInvoice);
+        } else {
+            System.out.println("Invoice not found");
+        }
+
+// SORT
+        ArrayList<Invoice> sortedInvoices = sortInvoicesByAmount(invoices);
+
+        System.out.println("Highest invoice amount:");
+        System.out.println(sortedInvoices.get(0).getAmount());
+
+// FILTER
+        ArrayList<Invoice> filteredInvoices =
+                filterInvoicesByAmount(invoices, new BigDecimal("5000"));
+
+        System.out.println("Invoices above 5000: " + filteredInvoices.size());
+
         for (Invoice invoice : invoices) {
 
             BigDecimal remainingBalance =
@@ -46,6 +68,44 @@ public class Main {
                         + " has " + paymentCount + " payments!");
             }
         }
+
+    }
+
+    public static Invoice searchInvoiceById(
+            ArrayList<Invoice> invoices, int invoiceId) {
+
+        for (Invoice invoice : invoices) {
+            if (invoice.getInvoiceId() == invoiceId) {
+                return invoice;
+            }
+        }
+
+        return null;
+    }
+
+    public static ArrayList<Invoice> sortInvoicesByAmount(
+            ArrayList<Invoice> invoices) {
+
+        ArrayList<Invoice> sortedInvoices = new ArrayList<>(invoices);
+
+        sortedInvoices.sort(
+                (a, b) -> b.getAmount().compareTo(a.getAmount())
+        );
+
+        return sortedInvoices;
+    }
+    public static ArrayList<Invoice> filterInvoicesByAmount(
+            ArrayList<Invoice> invoices, BigDecimal minAmount) {
+
+        ArrayList<Invoice> filteredInvoices = new ArrayList<>();
+
+        for (Invoice invoice : invoices) {
+            if (invoice.getAmount().compareTo(minAmount) > 0) {
+                filteredInvoices.add(invoice);
+            }
+        }
+
+        return filteredInvoices;
     }
 
 
