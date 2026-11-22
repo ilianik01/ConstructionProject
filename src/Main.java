@@ -13,75 +13,97 @@ public class Main {
         System.out.println(invoice.getIssueDate());
     }
 
-    public static void main(String[] args) {
-        Invoice firstInvoice = new Invoice(new BigDecimal("1500.50"), " A-125", LocalDate.of(2026, 10, 15), "Papadakis", 1);
-        Invoice secondInvoice = new Invoice(new BigDecimal("2000"), "A-126", LocalDate.of(2026, 10, 15), "Nikoloudakis", 2);
-        Invoice thirdInvoice = new Invoice(new BigDecimal("3000"), "A-127", LocalDate.of(2026, 1, 15), "Papas", 3);
+    public static void main(String[] args) {ArrayList<Invoice> invoices = new ArrayList<>();
+        ArrayList<Payment> payments = new ArrayList<>();
 
+        seedData(invoices, payments);
 
-        ArrayList<Invoice> invoices = new ArrayList<>();
-        addInvoice(firstInvoice, invoices);
-        addInvoice(secondInvoice, invoices);
-        addInvoice(thirdInvoice, invoices);
-
-
-
-
-
-
-
-
-
-
-
-
-
-        System.out.println(invoices.size());
-
-        System.out.println(invoices.get(1).
-
-    getSupplierName());
-
-        for(
-    int i = 0; i<invoices.size();i++)
-
-    {
-        System.out.println(invoices.get(i).getInvoiceId());
+        System.out.println("Invoices: " + invoices.size());
+        System.out.println("Payments: " + payments.size());
     }
 
 
+    public static void seedData(ArrayList<Invoice> invoices, ArrayList<Payment> payments) {
 
+        Random random = new Random();
+        int nextPaymentId = 1;
 
+        String[] suppliers = {
+                "Papadakis",
+                "Nikoloudakis",
+                "Papas",
+                "Kritikos",
+                "Manousakis"
+        };
 
+        for (int i = 0; i < 500; i++) {
 
-        for(
-    int i = 0; i<invoices.size();i++)
+            int invoiceId = i + 1;
+            BigDecimal amount = BigDecimal.valueOf(random.nextInt(50000) + 1);
+            String invoiceNumber = "A-" + invoiceId;
+            LocalDate issueDate = LocalDate.of(2026, 10, 15);
 
-    {
-        printInvoiceDetails(invoices.get(i));
+            int randomIndex = random.nextInt(suppliers.length);
+            String supplierName = suppliers[randomIndex];
+
+            Invoice newInvoice = new Invoice(
+                    amount,
+                    invoiceNumber,
+                    issueDate,
+                    supplierName,
+                    invoiceId
+            );
+
+            addInvoice(newInvoice, invoices);
+
+            // Δημιουργία 1–3 πληρωμών
+            int numberOfPayments = random.nextInt(3) + 1;
+
+            for (int j = 0; j < numberOfPayments; j++) {
+
+                BigDecimal remainingBalance =
+                        calculateRemainingBalance(newInvoice, payments);
+
+                if (remainingBalance.compareTo(BigDecimal.ZERO) == 0) {
+                    break;
+                }
+
+                int maxCents =
+                        remainingBalance.movePointRight(2).intValueExact();
+
+                int paymentsLeft = numberOfPayments - j - 1;
+                int maxPaymentCents = maxCents - paymentsLeft;
+
+                int randomCents;
+
+                if (paymentsLeft == 0) {
+                    randomCents = maxCents;
+                } else {
+                    randomCents = random.nextInt(maxPaymentCents) + 1;
+                }
+
+                BigDecimal paymentAmount =
+                        BigDecimal.valueOf(randomCents, 2);
+
+                LocalDate paymentDate =
+                        issueDate.plusDays(random.nextInt(31));
+
+                Payment newPayment = new Payment(
+                        nextPaymentId,
+                        invoiceId,
+                        paymentAmount,
+                        paymentDate,
+                        "Test payment"
+                );
+
+                addPayment(newPayment, payments, newInvoice);
+
+                nextPaymentId++;
+            }
+        }
     }
 
-        System.out.println(invoices.size());
 
-
-    Payment firstPayment = new Payment(1, 1, new BigDecimal("1000"), LocalDate.of(2026, 10, 15), "Papadakis Payment 2909", "concrete payment");
-
-
-
-    ArrayList<Payment> payments = new ArrayList<>();
-        addPayment(firstPayment, payments, firstInvoice);
-
-
-    Payment secondPayment = new Payment(2, 1, new BigDecimal("400"), LocalDate.of(2026, 10, 16), "secondtry", "lets");
-        addPayment(secondPayment, payments, firstInvoice);
-
-        BigDecimal remainingBalance = calculateRemainingBalance(firstInvoice, payments);
-        System.out.println(remainingBalance);
-
-
-
-
-    }
 
     public static void addPayment(
             Payment newPayment,

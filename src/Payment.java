@@ -6,10 +6,9 @@ public class Payment {
     private int invoiceId;
     private BigDecimal paymentAmount;
     private LocalDate paymentDate;
-    private String transactionReference;
     private String paymentDescription;
 
-    Payment(int paymentId, int invoiceId, BigDecimal paymentAmount, LocalDate paymentDate, String transactionReference, String paymentDescription) {
+    Payment(int paymentId, int invoiceId, BigDecimal paymentAmount, LocalDate paymentDate, String paymentDescription) {
         if (paymentId <= 0) {
             throw new IllegalArgumentException("Invalid payment Id");
 
@@ -30,16 +29,12 @@ public class Payment {
             throw new IllegalArgumentException("Invalid payment date");
         }
 
-        if (transactionReference == null || transactionReference.isBlank()) {
-            throw new IllegalArgumentException("Invalid Reference");
 
-        }
 
         this.paymentId = paymentId;
         this.invoiceId = invoiceId;
         this.paymentAmount = paymentAmount;
         this.paymentDate = paymentDate;
-        this.transactionReference = transactionReference;
         this.paymentDescription = paymentDescription;
 
 
@@ -62,11 +57,6 @@ public class Payment {
         return paymentDate;
     }
 
-    public String getTransactionReference() {
-        return transactionReference;
-
-
-    }
 
     public String getPaymentDescription() {
         return paymentDescription;
